@@ -2,7 +2,7 @@ import sys
 from PyQt6.QtWidgets import (
     QMainWindow, QApplication, QVBoxLayout, QWidget,
     QLabel, QCheckBox, QComboBox, QListWidget, QLineEdit,
-    QLineEdit, QSpinBox, QDoubleSpinBox, QSlider
+    QLineEdit, QSpinBox, QDoubleSpinBox, QSlider, QDial
 )
 from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtGui import QPixmap
@@ -36,6 +36,11 @@ class MainWindow(QMainWindow):
             QCheckBox(),
             QComboBox(),
             QListWidget(),
+            QLabel(),
+            QSpinBox(),
+            QSlider(),
+            QLabel(),
+            QDial(),
             QLabel()
         ]
 
@@ -49,6 +54,23 @@ class MainWindow(QMainWindow):
         self.widgets[3].currentTextChanged.connect(self.guess)
         self.widgets[4].setText('I will guess what you have picked')
         self.widgets[4].setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        self.widgets[5].setMinimum(-100)
+        self.widgets[5].setMaximum(16)
+        self.widgets[5].setPrefix("Р")
+        self.widgets[5].setSuffix("к")
+        self.widgets[5].setSingleStep(2)
+        self.widgets[6].setRange(-30, 30)
+        self.widgets[6].setSingleStep(2)
+        self.widgets[6].setOrientation(Qt.Orientation.Horizontal)
+        self.widgets[6].sliderPressed.connect(self.slidePress)
+        self.widgets[6].valueChanged.connect(self.value_review)
+        self.widgets[6].sliderReleased.connect(self.slideReleased)
+        self.widgets[7].setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        self.widgets[7].setVisible(False)
+        self.widgets[8].setRange(-100, 100)
+        self.widgets[8].setSingleStep(1)
+        self.widgets[8].valueChanged.connect(self.DialChanged)
+        self.widgets[9].setAlignment(Qt.AlignmentFlag.AlignHCenter)
 
         layout = QVBoxLayout()
 
@@ -61,6 +83,18 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(container)
 
         self.setFixedSize(QSize(1000, 800))
+
+    def DialChanged(self, i):
+        self.widgets[9].setText(str(i))
+
+    def slidePress(self):
+        self.widgets[7].setVisible(True)
+
+    def value_review(self, i):
+        self.widgets[7].setText(f' Громкость: {str(i)}')
+
+    def slideReleased(self):
+        self.widgets[7].setVisible(False)
 
     def statement(self, s):
         if s == 0:
